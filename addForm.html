@@ -1,0 +1,262 @@
+<div class="modal" tabindex="-1" id="myModal-add-form" >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Form Pendaftaran</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="row mt-2">
+                <div class="col">
+                  <label class="form-label">Nama Lengkap</label>
+                  <input type="text" class="form-control" id="nama_add">
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col">
+                  <label class="form-label">Instansi</label>
+                  <input type="text" class="form-control" id="instansi_add">
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col">
+                  <label class="form-label">Provinsi</label>
+                  <select class="form-select" id="provinsi_add">
+                    <option value="">---Pilih Provinsi---</option>
+                    <option value="Nanggroe Aceh Darussalam">Nanggroe Aceh Darussalam</option>
+                    <option value="Sumatera Utara">Sumatera Utara</option>
+                    <option value="Sumatera Selatan">Sumatera Selatan</option>
+                    <option value="Sumatera Barat">Sumatera Barat</option>
+                    <option value="Bengkulu">Bengkulu</option>
+                    <option value="Riau">Riau</option>
+                    <option value="Kepulauan Riau">Kepulauan Riau</option>
+                    <option value="Jambi">Jambi</option>
+                    <option value="Lampung">Lampung</option>
+                    <option value="Bangka Belitung">Bangka Belitung</option>
+                    <option value="Kalimantan Barat">Kalimantan Barat</option>
+                    <option value="Kalimantan Timur">Kalimantan Timur</option>
+                    <option value="Kalimantan Selatan">Kalimantan Selatan</option>
+                    <option value="Kalimantan Tengah">Kalimantan Tengah</option>
+                    <option value="Kalimantan Utara">Kalimantan Utara</option>
+                    <option value="Banten">Banten</option>
+                    <option value="DKI Jakarta">DKI Jakarta</option>
+                    <option value="Jawa Barat">Jawa Barat</option>
+                    <option value="Jawa Tengah">Jawa Tengah</option>
+                    <option value="Daerah Istimewa Yogyakarta">Daerah Istimewa Yogyakarta</option>
+                    <option value="Jawa Timur">Jawa Timur</option>
+                    <option value="Bali">Bali</option>
+                    <option value="Nusa Tenggara Timur">Nusa Tenggara Timur</option>
+                    <option value="Nusa Tenggara Barat">Nusa Tenggara Barat</option>
+                    <option value="Gorontalo">Gorontalo</option>
+                    <option value="Sulawesi Barat">Sulawesi Barat</option>
+                    <option value="Sulawesi Tengah">Sulawesi Tengah</option>
+                    <option value="Sulawesi Utara">Sulawesi Utara</option>
+                    <option value="Sulawesi Tenggara">Sulawesi Tenggara</option>
+                    <option value="Sulawesi Selatan">Sulawesi Selatan</option>
+                    <option value="Maluku Utara">Maluku Utara</option>
+                    <option value="Maluku">Maluku</option>
+                    <option value="Papua Barat">Papua Barat</option>
+                    <option value="Papua">Papua</option>
+                    <option value="Papua Tengah">Papua Tengah</option>
+                    <option value="Papua Pegunungan">Papua Pegunungan</option>
+                    <option value="Papua Selatan">Papua Selatan</option>
+                    <option value="Papua Barat Daya">Papua Barat Daya</option>
+                  </select>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col">
+                  <label class="form-label">Kota / Kabupaten</label>
+                  <input type="text" class="form-control" id="kotaKabupaten_add">
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col">
+                  <label class="form-label">Regional</label>
+                  <select class="form-select" id="regional_add">
+                    <option value="">---Pilih Regional---</option>
+                    <option value="Jabodetabek (Jakarta, Bogor, Depok, Tangerang, dan Bekasi)">Jabodetabek (Jakarta, Bogor, Depok, Tangerang, dan Bekasi)</option>
+                    <option value="Jawa Barat & Banten">Jawa Barat & Banten</option>
+                    <option value="Jawa Tengah & DI Yogyakarta">Jawa Tengah & DI Yogyakarta</option>
+                    <option value="Jawa Timur">Jawa Timur</option>
+                    <option value="Sumatera">Sumatera</option>
+                    <option value="Bali & Nusa Tenggara">Bali & Nusa Tenggara</option>
+                    <option value="Kalimantan">Kalimantan</option>
+                    <option value="Sulawesi">Sulawesi</option>
+                    <option value="Kepulauan Maluku">Kepulauan Maluku</option>
+                    <option value="Papua">Papua</option>
+                  </select>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col">
+                  <label class="form-label">Jenjang</label>
+                  <select class="form-select" id="jenjang_add">
+                    <option value="">---Pilih Jenjang---</option>
+                    <option value="PAUD/TK">PAUD/TK</option>
+                    <option value="SD/ Sederajat">SD/ Sederajat</option>
+                    <option value="SMP/ Sederajat">SMP/ Sederajat</option>
+                    <option value="SMA/SMK/ Sederajat">SMA/SMK/ Sederajat</option>
+                    <option value="SLB">SLB</option>
+                    <option value="PT">PT</option>
+                    <option value="DINAS/BBGP/BPMP">DINAS/BBGP/BPMP</option>
+                  </select>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col">
+                  <label class="form-label">Status Kepegawaian</label>
+                  <select class="form-select"  id="statusKepegawaian_add">
+                    <option value="">---Pilih Status Kepegawaian</option>
+                      <option value="ASN">ASN</option>
+                      <option value="PPPK">PPPK</option>
+                      <option value="SMP/ Sederajat">Honorer/ Guru Tidak Tetap</option>
+                      <option value="Guru Tetap Yayasan">Guru Tetap Yayasan</option>
+                  </select>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col">
+                  <label class="form-label">Alamat Email</label>
+                  <input type="text" class="form-control" id="email_add">
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col">
+                  <label class="form-label">Nomor WhatsApp</label>
+                  <input type="text" class="form-control" id="wa_add">
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col">
+                  <label class="form-label">Jenis Kelamin</label>
+                  <select class="form-select"  id="jenisKelamin_add">
+                    <option selected></option>
+                    <option value="Laki-Laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                  </select>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col">
+                  <label class="form-label">Agama</label>
+                  <select class="form-select"  id="agama_add">
+                    <option value="">---Pilih Agama---</option>
+                    <option value="Islam">Islam</option>
+                    <option value="Kristen">Kristen</option>
+                    <option value="Katholik">Katholik</option>
+                    <option value="Hindu">Hindu</option>
+                    <option value="Budha">Budha</option>
+                    <option value="Konghuchu">Konghuchu</option>
+                    <option value="Kepercayaan">Kepercayaan</option>
+                  </select>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col">
+                  <label class="form-label">Tempat Lahir</label>
+                  <input type="text" class="form-control" id="tempatLahir_add">
+                </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col">
+                <label class="form-label">Tanggal Lahir</label>
+                <input type="date" class="form-control" id="tanggalLahir_add">
+              </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col">
+                  <label class="form-label">Nomor Unik Pegawai Tenaga Kependidikan (NUPTK)</label>
+                  <input type="text" class="form-control" id="nuptk_add">
+                </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col">
+                <label class="form-label">NIP/ NIY /NIPPPK</label>
+                <input type="text" class="form-control" id="nip_add">
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col">
+                <label class="form-label">Apakah Anda penyandang disabilitas?</label>
+                <select class="form-select" id="disabilitas_add" onchange="toggleJenisDisabilitas()">
+                  <option selected></option>
+                  <option value="Ya">Ya</option>
+                  <option value="Tidak">Tidak</option>
+                </select>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col">
+                <label class="form-label">Jika Ya, tuliskan Disabilitas Anda</label>
+                <input type="text" class="form-control" id="jenisDisabilitas_add" disabled>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col">
+                <label class="form-label">Apa yang Menjadi Ketertarikan / Interest Anda? dan Bagikan untuk Orang Lain?</label>
+                <input type="text" class="form-control" id="interest_add">
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col">
+                <label class="form-label">Motivasi dan Harapan Bergabung di Komunitas Kami Pengajar?</label>
+                <input type="text" class="form-control" id="harapan_add">
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col">
+                <label class="form-label">Mengetahui Komunitas Kami Pengajar dari mana?</label>
+                <select class="form-select"  id="darimana_add">
+                  <option value="">---Pilih---</option>
+                  <option value="Anggota Komunitas">Anggota Komunitas</option>
+                  <option value="WhatsApp">WhatsApp</option>
+                  <option value="Telegram">Telegram</option>
+                  <option value="Media Sosial">Media Sosial</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col">
+                <label class="form-label">Salin link akun media sosial Anda!</label>
+                <input type="text" class="form-control" id="medsos_add">
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col">
+                <label class="form-label">Jumlah Followers Media Sosial Pribadi</label>
+                <input type="text" class="form-control" id="followers_add">
+              </div>
+              <div class="row mt-2">
+              <div class="col">
+                <label class="form-label">Sandi yang akan digunakan untuk mengedit data</label>
+                <input type="text" class="form-control" id="sandi_add">
+              </div>
+            </div>
+            </div><div class="row mt-2">
+              <div class="col">
+                <label class="form-label">Foto</label>
+                <input type="text" class="form-control" id="foto_add" disabled>
+              </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary mt-4" id="add-record-button">Save</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script>
+  function toggleJenisDisabilitas() {
+  const disabilitasSelect = document.getElementById("disabilitas_add");
+  const jenisDisabilitasInput = document.getElementById("jenisDisabilitas_add");
+
+  if (disabilitasSelect.value === "Ya") {
+    jenisDisabilitasInput.removeAttribute("disabled");
+  } else {
+    jenisDisabilitasInput.setAttribute("disabled", "disabled");
+  }
+}
+</script>
