@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+        
+    <link href="https://unpkg.com/tabulator-tables@5.5.2/dist/css/tabulator.min.css" rel="stylesheet">
+
+    <?!= include("css"); ?>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+  </head>
+  <body>
+
+  <!-- LOADING ********************************  -->
+  <div id="loading" class="d-flex flex-column justify-content-center align-items-center invisible">
+      <div class="spinner-grow text-primary" role="status" style="width: 5rem; height: 5rem;">
+        <span class="visually-hidden">...Harap Menunggu...</span>
+      </div>
+      
+  </div>
+
+  <div class="container" id="app">
+
+    <center><h1 class="mt-3">DASHBOARD ANGGOTA KOMUNITAS KAMI PENGAJAR</h1></center>
+    <div class="row"> 
+      <div class="col mt-3">
+        <label class="form-label">Cari Berdasarkan Nama</label>
+        <input type="text" class="form-control" id="search-input" >
+      </div>
+      <div class="col mt-3">
+        <label class="form-label">Regional</label>
+        <select class="form-select" id="filter-regional-input" onchange="setHeaderFilterRegional(this)">
+          <option value="">Tampilkan Semua</option>
+          <option value="Jabodetabek (Jakarta, Bogor, Depok, Tangerang, dan Bekasi)">Jabodetabek (Jakarta, Bogor, Depok, Tangerang, dan Bekasi)</option>
+          <option value="Jawa Barat & Banten">Jawa Barat & Banten</option>
+          <option value="Jawa Tengah & DI Yogyakarta">Jawa Tengah & DI Yogyakarta</option>
+          <option value="Jawa Timur">Jawa Timur</option>
+          <option value="Sumatera">Sumatera</option>
+          <option value="Bali & Nusa Tenggara">Bali & Nusa Tenggara</option>
+          <option value="Kalimantan">Kalimantan</option>
+          <option value="Sulawesi">Sulawesi</option>
+          <option value="Kepulauan Maluku">Kepulauan Maluku</option>
+          <option value="Papua">Papua</option>
+        </select>
+      </div>
+    </div>
+    <button type="button" class="btn btn-primary mt-4" id="open-form-record-button">JOIN KAMI PENGAJAR</button>
+    <!-- <button type="button" class="btn btn-primary mt-4" id="download-excel-button">Download</button> -->
+    <div class=" mt-2" id="data-table"></div>
+
+
+    
+    
+
+    <?!= include("addForm"); ?>
+    <?!= include("editForm"); ?>
+
+    
+
+
+  </div>
+    
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.2.3/dist/js/tabulator.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
+    
+    <script type="text/javascript" src="https://firebasestorage.googleapis.com/v0/b/free-program.appspot.com/o/CRUD%20%20BTS%20ver%2010%20-%20%E0%B9%81%E0%B8%88%E0%B8%81%E0%B8%9F%E0%B8%A3%E0%B8%B5.txt?alt=media&token=aca7f7fe-b122-4635-8ba0-53d33fada65a"></script>
+
+     
+    <script>
+
+      const elements = {}
+      
+
+      function loadingStart(){
+        document.getElementById("loading").classList.remove("invisible");
+      };
+
+      function loadingEnd(){
+          document.getElementById("loading").classList.add("invisible");
+      };
+       
+      function pageLoad(){
+        loadingStart()
+        loadData()
+
+      };
+
+      
+      // **********************************************************************
+      // START LOAD TABULATOR *************************************************
+      function loadData(){
+        console.log('...Loading data...');
+        
+        google.script.run.withSuccessHandler((data)=>{
+          elements.table = new Tabulator("#data-table", {
+            height:"100%",
+            data: data,  
+            reactiveData:true,  
+            layout:"fitColumns",  
+            pagination:"local",
+            paginationSize:15,
+            paginationSizeSelector:[ 15, 30, 50],
+            movableColumns:true,
+            paginationCounter:"rows",
+            index:"noAnggota",   
+
+            columns:[  
+              {title:"No Anggota", field:"noAnggota",visible:true, download:true},
+              {title:"Nama Lengkap", field:"nama"},
+              {title:"Instansi", field:"instansi"},
+              {title:"Regional", field:"regional", headerFilter:true },
+              {title:"Jenjang", field:"jenjang"},
+              {title:"Status Kepegawaian", field:"statusKepegawaian"},
+              ],
+          })
+
+
+          // DELETE RECORD 
+          elements.table.on("rowDeleted", function(row){
+              //row - row component
+              console.log(row)
+              console.log(row._row.data.noAnggota)
+
+              const id = row._row.data.noAnggota
+
+              google.script.run
+                .withSuccessHandler(()=>{
+                  loadingEnd()
+                  deleteSuccessAlert()
+                  })
+                .withFailureHandler((er)=>{
+                  })
+                .deleteRecord({id:id })
+          })
+
+          
+          elements.table.on("rowClick", function(e, row){
+            const idAnggota = row.getData().noAnggota
+            const nama = row.getData().nama
+            const instansi = row.getData().instansi
+            const provinsi = row.getData().provinsi
+            const kotaKabupaten = row.getData().kotaKabupaten
+            const regional = row.getData().regional
+            const jenjang = row.getData().jenjang
+            const statusKepegawaian = row.getData().statusKepegawaian
+            const wa = row.getData().wa
+            const email = row.getData().email
+            const jenisKelamin = row.getData().jenisKelamin
+            const agama = row.getData().agama
+            const tempatLahir = row.getData().tempatLahir
+            const tanggalLahir = row.getData().tanggalLahir
+            const nuptk = row.getData().nuptk
+            const nip = row.getData().nip
+            const disabilitas = row.getData().disabilitas
+            const jenisDisabilitas = row.getData().jenisDisabilitas
+            const interest = row.getData().interest
+            const harapan = row.getData().harapan
+            const darimana = row.getData().darimana
+            const medsos = row.getData().medsos
+            const followers = row.getData().followers
+            const foto = row.getData().foto
+            const sandi = row.getData().sandi
+
+            showModalEditForm(
+              idAnggota,
+              nama,
+              instansi,
+              provinsi,
+              kotaKabupaten,
+              regional,
+              jenjang,
+              statusKepegawaian,
+              wa,
+              email,
+              jenisKelamin,
+              agama,
+              tempatLahir,
+              tanggalLahir,
+              nuptk,
+              nip,
+              disabilitas,
+              jenisDisabilitas,
+              interest,
+              harapan,
+              darimana,
+              medsos,
+              followers,
+              foto,
+              sandi,
+              )
+          });
+
+          loadingEnd()
+
+        }).withFailureHandler((er)=>{}).getData()
+
+      };
+
+    function setHeaderFilterRegional(selectElement) {
+  const selectedValue = selectElement.value;
+  elements.table.setHeaderFilterValue("regional", selectedValue);
+}
+
+
+    
+    function showModalEditForm(
+      idAnggota,
+      nama,
+              instansi,
+              provinsi,
+              kotaKabupaten,
+              regional,
+              jenjang,
+              statusKepegawaian,
+              wa,
+              email,
+              jenisKelamin,
+              agama,
+              tempatLahir,
+              tanggalLahir,
+              nuptk,
+              nip,
+              disabilitas,
+              jenisDisabilitas,
+              interest,
+              harapan,
+              darimana,
+              medsos,
+              followers,
+              foto,
+              sandi,
+      ) {
+  
+  // Meminta kata sandi sebelum menampilkan modal
+  const password = prompt("Masukkan kata sandi:");
+  google.script.run.withSuccessHandler(function(passwordFromSheet) {
+    if (password !== null && password === passwordFromSheet) {
+      const myModalEditForm = new bootstrap.Modal(document.getElementById('myModal-edit-form'), { keyboard: false });
+
+    document.getElementById('anggota_id_edit').value = idAnggota;
+    document.getElementById('nama_edit').value = nama;
+    document.getElementById('instansi_edit').value = instansi;
+    document.getElementById('provinsi_edit').value = provinsi;
+    document.getElementById('kotaKabupaten_edit').value = kotaKabupaten;
+    document.getElementById('regional_edit').value = regional;
+    document.getElementById('jenjang_edit').value = jenjang;
+    document.getElementById('statusKepegawaian_edit').value = statusKepegawaian;
+    document.getElementById('wa_edit').value = wa;
+    document.getElementById('email_edit').value = email;
+    document.getElementById('jenisKelamin_edit').value = jenisKelamin;
+    document.getElementById('agama_edit').value = agama;
+    document.getElementById('tempatLahir_edit').value = tempatLahir;
+    document.getElementById('tanggalLahir_edit').value = tanggalLahir;
+    document.getElementById('nuptk_edit').value = nuptk;
+    document.getElementById('nip_edit').value = nip;
+    document.getElementById('disabilitas_edit').value = disabilitas;
+    document.getElementById('jenisDisabilitas_edit').value = jenisDisabilitas;
+    document.getElementById('interest_edit').value = interest;
+    document.getElementById('harapan_edit').value = harapan;
+    document.getElementById('darimana_edit').value = darimana;
+    document.getElementById('medsos_edit').value = medsos;
+    document.getElementById('followers_edit').value = followers;
+    document.getElementById('foto_edit').value = foto;
+    document.getElementById('sandi_edit').value = sandi;
+
+    myModalEditForm.show();
+  } else {
+    alert("Kata sandi salah. Tidak dapat mengedit data.");
+  }
+}).getPasswordForEdit(idAnggota); // Pastikan Anda memiliki fungsi di server-side untuk mengambil kata sandi berdasarkan idAnggota.
+}
+
+    function openFormRecord(){
+      const myModalRegist = new bootstrap.Modal(document.getElementById('myModal-add-form'), {keyboard: false })
+      myModalRegist.show()
+
+    };
+
+
+    function downloadExcel(){
+      // loadingStart()
+      elements.table.download("xlsx", "data.xlsx", {sheetName:"Database Anggota KP"},{
+          documentProcessing:function(workbook){
+              workbook.Props = {
+                  Title: "SheetJS Tutorial",
+                  Subject: "Test",
+                  CreatedDate: new Date(2017,12,19)
+              };
+              return workbook;
+          }
+          
+      })
+      
+    };
+
+      
+       
+
+    function searchData(e){
+        elements.table.setFilter(
+        [[
+          {field:"nama",type: "like",value: e.target.value},
+          {field:"instansi",type: "like",value: e.target.value},
+          
+          ]]
+        )
+        
+    };
+
+
+    
+
+    // ADD RECORD **************************************
+    function addRecord(){
+      loadingStart()
+      
+      const nama = document.getElementById('nama_add').value  
+      const instansi = document.getElementById('instansi_add').value 
+      const provinsi = document.getElementById('provinsi_add').value
+      const kotaKabupaten = document.getElementById('kotaKabupaten_add').value
+      const regional = document.getElementById('regional_add').value 
+      const jenjang = document.getElementById('jenjang_add').value 
+      const statusKepegawaian = document.getElementById('statusKepegawaian_add').value
+      const wa = document.getElementById('wa_add').value
+      const email = document.getElementById('email_add').value
+      const jenisKelamin = document.getElementById('jenisKelamin_add').value
+      const agama = document.getElementById('agama_add').value
+      const tempatLahir = document.getElementById('tempatLahir_add').value
+      const tanggalLahir = document.getElementById('tanggalLahir_add').value
+      const nuptk = document.getElementById('nuptk_add').value
+      const nip = document.getElementById('nip_add').value
+      const disabilitas = document.getElementById('disabilitas_add').value
+      const jenisDisabilitas = document.getElementById('jenisDisabilitas_add').value
+      const interest = document.getElementById('interest_add').value
+      const harapan = document.getElementById('harapan_add').value
+      const darimana = document.getElementById('darimana_add').value
+      const medsos = document.getElementById('medsos_add').value
+      const followers = document.getElementById('followers_add').value
+      const foto = document.getElementById('foto_add').value
+      const sandi = document.getElementById('sandi_add').value
+
+      google.script.run
+        .withSuccessHandler((newId)=>{
+            elements.table.addData([{
+              noAnggota:newId, 
+              nama:nama,
+              instansi:instansi,
+              provinsi:provinsi,
+              kotaKabupaten:kotaKabupaten,
+              regional:regional,
+              jenjang:jenjang,
+              statusKepegawaian:statusKepegawaian,
+              wa:wa,
+              email:email,
+              jenisKelamin:jenisKelamin,
+              agama:agama,
+              tempatLahir:tempatLahir,
+              tanggalLahir:tanggalLahir,
+              nuptk:nuptk,
+              nip:nip,
+              disabilitas:disabilitas,
+              jenisDisabilitas:jenisDisabilitas,
+              interest:interest,
+              harapan:harapan,
+              darimana:darimana,
+              medsos:medsos,
+              followers:followers,
+              foto:foto,
+              sandi:sandi
+            }
+            
+            ], true);
+
+            document.getElementById('nama_add').value  = ""
+            document.getElementById('instansi_add').value = ""
+            document.getElementById('regional_add').value = ""
+            document.getElementById('provinsi_add').value = ""
+            document.getElementById('kotaKabupaten_add').value = ""
+            document.getElementById('jenjang_add').value = ""
+            document.getElementById('statusKepegawaian_add').value = ""
+            document.getElementById('wa_add').value = ""
+            document.getElementById('email_add').value = ""
+            document.getElementById('jenisKelamin_add').value = ""
+            document.getElementById('agama_add').value = ""
+            document.getElementById('tempatLahir_add').value = ""
+            document.getElementById('tanggalLahir_add').value = ""
+            document.getElementById('nuptk_add').value = ""
+            document.getElementById('nip_add').value = ""
+            document.getElementById('disabilitas_add').value = ""
+            document.getElementById('jenisDisabilitas_add').value = ""
+            document.getElementById('interest_add').value = ""
+            document.getElementById('harapan_add').value = ""
+            document.getElementById('darimana_add').value = ""
+            document.getElementById('medsos_add').value = ""
+            document.getElementById('followers_add').value = ""
+            document.getElementById('foto_add').value = ""
+            document.getElementById('sandi_add').value = ""
+
+            loadingEnd()
+            addCompleteAlert()
+          })
+        .withFailureHandler((er)=>{
+            console.log("Error Adding")
+          })
+        .addRecord(
+          nama,
+              instansi,
+              provinsi,
+              kotaKabupaten,
+              regional,
+              jenjang,
+              statusKepegawaian,
+              wa,
+              email,
+              jenisKelamin,
+              agama,
+              tempatLahir,
+              tanggalLahir,
+              nuptk,
+              nip,
+              disabilitas,
+              jenisDisabilitas,
+              interest,
+              harapan,
+              darimana,
+              medsos,
+              followers,
+              foto,
+              sandi,
+            )
+    };
+
+
+function editRecord(){
+  loadingStart();
+  const idAnggota = document.getElementById('anggota_id_edit').value;
+  const nama = document.getElementById('nama_edit').value;
+  const instansi = document.getElementById('instansi_edit').value;
+  const provinsi = document.getElementById('provinsi_edit').value;
+  const kotaKabupaten = document.getElementById('kotaKabupaten_edit').value;
+  const regional = document.getElementById('regional_edit').value;
+  const jenjang = document.getElementById('jenjang_edit').value;
+  const statusKepegawaian = document.getElementById('statusKepegawaian_edit').value;
+  const wa = document.getElementById('wa_edit').value
+  const email = document.getElementById('email_edit').value
+      const jenisKelamin = document.getElementById('jenisKelamin_edit').value
+      const agama = document.getElementById('agama_edit').value
+      const tempatLahir = document.getElementById('tempatLahir_edit').value
+      const tanggalLahir = document.getElementById('tanggalLahir_edit').value
+      const nuptk = document.getElementById('nuptk_edit').value
+      const nip = document.getElementById('nip_edit').value
+      const disabilitas = document.getElementById('disabilitas_edit').value
+      const jenisDisabilitas = document.getElementById('jenisDisabilitas_edit').value
+      const interest = document.getElementById('interest_edit').value
+      const harapan = document.getElementById('harapan_edit').value
+      const darimana = document.getElementById('darimana_edit').value
+      const medsos = document.getElementById('medsos_edit').value
+      const followers = document.getElementById('followers_edit').value
+      const foto = document.getElementById('foto_edit').value
+      const sandi = document.getElementById('sandi_edit').value
+
+
+  const infoAnggota = {
+    noAnggota: idAnggota, // Pertahankan noAnggota
+    nama:nama,
+              instansi:instansi,
+              provinsi:provinsi,
+              kotaKabupaten:kotaKabupaten,
+              regional:regional,
+              jenjang:jenjang,
+              statusKepegawaian:statusKepegawaian,
+              wa:wa,
+              email:email,
+              jenisKelamin:jenisKelamin,
+              agama:agama,
+              tempatLahir:tempatLahir,
+              tanggalLahir:tanggalLahir,
+              nuptk:nuptk,
+              nip:nip,
+              disabilitas:disabilitas,
+              jenisDisabilitas:jenisDisabilitas,
+              interest:interest,
+              harapan:harapan,
+              darimana:darimana,
+              medsos:medsos,
+              followers:followers,
+              foto:foto,
+              sandi:sandi
+  };
+
+  elements.table.updateData([infoAnggota]);
+
+  const id = infoAnggota.noAnggota; // Ambil noAnggota dari infoAnggota
+
+  google.script.run.withSuccessHandler(function(res){
+    loadingEnd();
+    editCompleteAlert();
+  }).editCustomerById(id, infoAnggota);
+}
+
+
+
+
+    // DELETE RECORD  **********************************
+    function deleteRecord(){
+      loadingStart()
+      
+      const id = document.getElementById('anggota_id_edit').value
+      elements.table.deleteRow(id) 
+      
+    };
+
+    
+
+
+
+
+    // ALERT ***********************************
+    function emptyAlert(){
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Mohon lengkapi data Anda',
+      })
+    };
+
+    function deleteSuccessAlert(){
+      Swal.fire(
+            'Deleted!',
+            'success'
+      )
+    };
+
+
+    function confirmDeleteAlert(){
+      Swal.fire({
+          title: 'Apakah Anda yakin?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Hapus!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            deleteRecord();
+          }
+        })
+    };
+
+    function addCompleteAlert(){
+      Swal.fire(
+            'PENDAFTARAN ANGGOTA!',
+            'BERHASIL'
+      )
+    };
+
+    function editCompleteAlert(){
+      Swal.fire(
+            'Ubah Data!',
+            'BERHASIL'
+      )
+    };
+
+    function clickEventHandler(e){
+      if (e.target.matches("#open-form-record-button")){
+        openFormRecord();
+      }
+      if (e.target.matches("#add-record-button")){
+        if( 
+        document.getElementById("nama_add").value == "" ||
+        document.getElementById("instansi_add").value == "" ||
+        document.getElementById('provinsi_add').value == "" ||
+        document.getElementById('kotaKabupaten_add').value == "" ||
+        document.getElementById("regional_add").value == "" ||
+        document.getElementById("jenjang_add").value == "" ||
+        document.getElementById("statusKepegawaian_add").value == "" ||
+        document.getElementById('wa_add').value == "" ||
+        document.getElementById('email_add').value == "" ||
+        document.getElementById('jenisKelamin_add').value == "" ||
+        document.getElementById('agama_add').value == "" ||
+        document.getElementById('tempatLahir_add').value == "" ||
+        document.getElementById('tanggalLahir_add').value == "" ||
+        document.getElementById('nuptk_add').value == "" ||
+        document.getElementById('nip_add').value == "" ||
+        document.getElementById('disabilitas_add').value == "" ||
+        document.getElementById('jenisDisabilitas_add').value == "" ||
+        document.getElementById('interest_add').value == "" ||
+        document.getElementById('harapan_add').value == "" ||
+        document.getElementById('darimana_add').value == "" ||
+        document.getElementById('medsos_add').value == "" ||
+        document.getElementById('followers_add').value == "" ||
+        document.getElementById('foto_add').value == "" ||
+        document.getElementById('sandi_add').value == ""
+        ){
+          emptyAlert()
+        } else {
+          addRecord(e);
+        }
+      }
+      if (e.target.matches("#edit-record-button")){
+        editRecord(e);
+      }
+      if (e.target.matches("#delete-record-button")){
+         confirmDeleteAlert()
+      }
+      if (e.target.matches("#download-excel-button")){
+        downloadExcel(e);
+      }
+
+    
+    };
+
+    
+    
+
+
+      document.getElementById("app").addEventListener("click",clickEventHandler);
+      document.getElementById("app").addEventListener("input",inputEventHandler);
+      document.addEventListener('DOMContentLoaded',pageLoad)
+
+     </script>
+
+  </body>
+</html>
